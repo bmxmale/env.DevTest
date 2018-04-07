@@ -1,0 +1,24 @@
+defaultEntryPoints = ["http", "https"]
+
+traefikLogsFile = "/etc/traefik/log/traefik.log"
+logLevel = "ERROR"
+
+[entryPoints]
+    [entryPoints.http]
+        address = ":80"
+        compress = true
+    [entryPoints.http.redirect]
+        entryPoint = "https"
+    [entryPoints.https]
+        address = ":443"
+        compress = true
+    [entryPoints.https.tls]
+        [[entryPoints.https.tls.certificates]]
+            certFile = "/etc/traefik/certs/wildcard.udviklet.dk.pem"
+            keyFile = "/etc/traefik/certs/wildcard.udviklet.dk.pem"
+
+[docker]
+    domain = "udviklet.dk"
+    exposedbydefault = true
+    swarmmode = false
+    watch = true

@@ -1,0 +1,40 @@
+version: '2'
+services:
+  traefik:
+    container_name: Traefik
+    image: traefik:latest
+    volumes:
+      - ./mount/ssl/pem:/etc/traefik/certs
+      - ./mount/traefik/traefik.toml:/etc/traefik/traefik.toml
+      - ./mount/traefik/log:/etc/traefik/log
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+      - 443:443
+
+  mysql:
+    container_name: MySQL
+    image: mysql:latest
+    volumes:
+      - ./mount/mysql/data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  nginx:
+    container_name: CacheWarmer_NGINX
+    image: nginx:stable
+    volumes:
+      - ./app/php-recruitment-test:/srv/cacheWarmer
+      - ./mount/nginx/cacheWarmer.conf:/etc/nginx/conf.d/default.conf
+    labels:
+      - "traefik.backend=CacheWarmer"
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:snowdog.udviklet.dk"
+
+  php:
+    container_name: CacheWarmer_PHP
+    build: build/php
+    volumes:
+      - ./app/php-recruitment-test:/srv/cacheWarmer
+    ports:
+      - "2222:22"
