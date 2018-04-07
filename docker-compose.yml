@@ -29,7 +29,7 @@ services:
     labels:
       - "traefik.backend=CacheWarmer"
       - "traefik.port=80"
-      - "traefik.frontend.rule=Host:snowdog.udviklet.dk"
+      - "traefik.frontend.rule=Host:cache-warmer.udviklet.dk"
 
   php:
     container_name: CacheWarmer_PHP
